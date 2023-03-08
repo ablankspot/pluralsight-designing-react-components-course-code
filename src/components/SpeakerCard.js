@@ -60,7 +60,7 @@ function SpeakerInfo({ first, last, bio, company, twitterHandle, favorite }) {
     );
 }
 
-function SpeakerCard({ speaker }) {
+function SpeakerCard({ speaker, showSessions }) {
     const { id, first, last, sessions } = speaker;
 
     return (
@@ -69,7 +69,10 @@ function SpeakerCard({ speaker }) {
                 <SpeakerImage id={id} first={first} last={last} />
                 <SpeakerInfo {...speaker} />
             </div>
-            <Sessions sessions={sessions} />
+            { showSessions === true ?
+                <Sessions sessions={sessions} /> :
+                null
+            }
         </div>
     );
 }
