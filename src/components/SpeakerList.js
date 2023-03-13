@@ -1,16 +1,15 @@
 import ReactPlaceHolder from "react-placeholder";
 import SpeakerCard from "./SpeakerCard";
-import useRequestSpeakers from "../hooks/useRequestSpeakers";
+import useRequestSpeakers, { REQUEST_STATUS } from "../hooks/useRequestSpeakers";
 
 function SpeakerList({ showSessions }) {
     
     const {
-        speakersData, isLoading,
-        hasError, error,
-        onFavoriteToggle
+        speakersData, requestStatus,
+        error, onFavoriteToggle
     } = useRequestSpeakers(2000);
 
-    if (hasError === true) { 
+    if (requestStatus === REQUEST_STATUS.FAILURE) { 
         return (
             <div className="text-danger">
                 ERROR: <b>Loading speaker data failed: {error}</b>
@@ -23,7 +22,7 @@ function SpeakerList({ showSessions }) {
             type="media"
             rows={15}
             className="speakerlist-placeholder"
-            ready={isLoading === false}
+            ready={requestStatus === REQUEST_STATUS.SUCCESS}
         >
             <div className="container speakers-list">
                 <div className="row">
