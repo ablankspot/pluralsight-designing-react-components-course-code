@@ -1,3 +1,5 @@
+import React, { useState } from 'react';
+
 function Session(props) {
     return (
         <span className="session w-100">
@@ -34,14 +36,25 @@ function SpeakerImage(props) {
 }
 
 function SpeakerFavorite({ favorite, onFavoriteToggle }) {
+    const [inProgress, setInProgress] = useState(false);
+
+    function doneCallback() {
+        setInProgress(false);
+        console.log(`In SpeakerFavorite:doneCallback  ${new Date().getMilliseconds()}`);
+    }
+    
     return (
         <div className="action padB1">
-            <span onClick={onFavoriteToggle}>
+            <span onClick={function () {
+                setInProgress(true);
+                return onFavoriteToggle(doneCallback);
+            }}>
                 <i className={
                     favorite === true ?
                         "fa fa-star orange" :
                         "fa fa-star-o orange"
                 } />{" "}Favorite{" "}
+                {inProgress ? (<span className="fas fa-circle-notch fa-spin"></span>) : null}
             </span>
         </div>
     );
