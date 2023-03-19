@@ -1,0 +1,20 @@
+import { createContext, useState } from "react";
+
+export const ThemeContext = createContext();
+
+function Layout({initialTheme, children}) {
+    const[theme, setTheme] = useState(initialTheme)
+
+    return (
+        <ThemeContext.Provider value={{ setTheme, theme }}>
+            <div className={theme === "light" ?
+                "container-fluid light" : "container-fluid dark"}>
+                
+                { children }
+
+            </div>
+        </ThemeContext.Provider>
+    )
+}
+
+export default Layout;
