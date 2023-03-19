@@ -1,14 +1,17 @@
+import { useContext } from "react";
 import ReactPlaceHolder from "react-placeholder";
 import SpeakerCard from "./SpeakerCard";
 import useRequestDelay, { REQUEST_STATUS } from "../hooks/useRequestDelay";
 import { data } from "../../SpeakerData"
+import { SpeakerFilterContext } from "../contexts/SpeakerFilterContext";
 
-function SpeakerList({ showSessions }) {
-    
+function SpeakerList() {
     const {
         data: speakersData, requestStatus,
         error, updateRecord
     } = useRequestDelay(2000, data);
+
+    const { eventYear, searchQuery } = useContext(SpeakerFilterContext);
 
     if (requestStatus === REQUEST_STATUS.FAILURE) { 
         return (
@@ -27,22 +30,32 @@ function SpeakerList({ showSessions }) {
         >
             <div className="container speakers-list">
                 <div className="row">
-                    {speakersData.map(function (speaker) {
-                        const { id, bio, first, last, favorite, twitterHandle, company, sessions } = speaker;
-
+                    {speakersData
+                        .filter((speaker) => {
                         return (
-                            <SpeakerCard
-                                key={speaker.id}
-                                speaker={speaker}
-                                showSessions={showSessions}
-                                onFavoriteToggle={(doneCallback) => {
-                                    updateRecord({
-                                        ...speaker,
-                                        favorite: !speaker.favorite,
-                                    }, doneCallback);
-                                }} />
+                            speaker.first.toLowerCase().includes(searchQuery) ||
+                            speaker.last.toLowerCase().includes(searchQuery)
                         );
-                    })}
+                        })
+                        .filter((speaker) => {
+                            return speaker.sessions.find((session) => { return session.eventYear === eventYear; })
+                        })
+                        .map(function (speaker) {
+                            const { id, bio, first, last, favorite, twitterHandle, company, sessions } = speaker;
+
+                            return (
+                                <SpeakerCard
+                                    key={speaker.id}
+                                    speaker={speaker}
+                                    onFavoriteToggle={(doneCallback) => {
+                                        updateRecord({
+                                            ...speaker,
+                                            favorite: !speaker.favorite,
+                                        }, doneCallback);
+                                    }} />
+                            );
+                        })
+                    }
                 </div>
             </div>
         </ReactPlaceHolder>
