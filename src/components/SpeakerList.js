@@ -8,7 +8,7 @@ import { SpeakerFilterContext } from "../contexts/SpeakerFilterContext";
 function SpeakerList() {
     const {
         data: speakersData, requestStatus,
-        error, updateRecord
+        error, updateRecord, insertRecord, deleteRecord
     } = useRequestDelay(2000, data);
 
     const { eventYear, searchQuery } = useContext(SpeakerFilterContext);
@@ -48,6 +48,8 @@ function SpeakerList() {
                                     key={speaker.id}
                                     speaker={speaker}
                                     updateRecord={updateRecord}
+                                    insertRecord={insertRecord}
+                                    deleteRecord={deleteRecord}
                                 />
                             );
                         })

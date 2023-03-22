@@ -55,7 +55,52 @@ function useRequestDelay(delayTime = 1000, initialData = []) {
         delayFunc();
     }
 
-    return { data, requestStatus, error, updateRecord };
+    function insertRecord(record, doneCallback) {
+        const origialRecords = [...data];
+        const newRecords = [record, ...data];
+            
+        async function delayFunc() {
+            try {
+                setData(newRecords);
+                await delay(delayTime);
+                
+                if (doneCallback) doneCallback();
+            }
+            catch (e) {
+                console.log("Error loading", e);
+                if (doneCallback) doneCallback();
+                setData(origialRecords);
+            }
+        }
+
+        delayFunc();
+    }
+
+    function deleteRecord(record, doneCallback) {
+        const origialRecords = [...data];
+        const newRecords = data.filter(rec => {
+            rec.id != record.id;
+        });
+            
+        async function delayFunc() {
+            try {
+                setData(newRecords);
+                await delay(delayTime);
+                
+                if (doneCallback) doneCallback();
+            }
+            catch (e) {
+                console.log("Error loading", e);
+                if (doneCallback) doneCallback();
+                setData(origialRecords);
+            }
+        }
+
+        delayFunc();
+    }
+
+
+    return { data, requestStatus, error, updateRecord, insertRecord, deleteRecord };
 }
 
 export default useRequestDelay;
