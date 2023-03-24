@@ -1,6 +1,7 @@
 import React, { useContext, useState } from 'react';
 import { SpeakerFilterContext } from "../contexts/SpeakerFilterContext"
 import { SpeakerContext, SpeakerProvider } from '../contexts/SpeakerContext';
+import SpeakerDelete from "./SpeakerDelete"
 
 function Session(props) {
     return (
@@ -114,10 +115,8 @@ function SpeakerCard({ speaker, updateRecord, insertRecord, deleteRecord }) {
                     <SpeakerImage />
                     <SpeakerInfo />
                 </div>
-                { showSessions === true ?
-                    <Sessions /> :
-                    null
-                }
+                {showSessions === true ? <Sessions /> : null}
+                <SpeakerDelete />
             </div>
         </SpeakerProvider>
     );

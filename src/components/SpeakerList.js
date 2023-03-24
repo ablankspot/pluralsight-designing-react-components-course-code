@@ -4,6 +4,7 @@ import SpeakerCard from "./SpeakerCard";
 import useRequestDelay, { REQUEST_STATUS } from "../hooks/useRequestDelay";
 import { data } from "../../SpeakerData"
 import { SpeakerFilterContext } from "../contexts/SpeakerFilterContext";
+import SpeakerAdd from "./SpeakerAdd";
 
 function SpeakerList() {
     const {
@@ -22,13 +23,14 @@ function SpeakerList() {
     }
 
     return (
-        <ReactPlaceHolder
-            type="media"
-            rows={15}
-            className="speakerlist-placeholder"
-            ready={requestStatus === REQUEST_STATUS.SUCCESS}
-        >
-            <div className="container speakers-list">
+        <div className="container speakers-list">
+            <ReactPlaceHolder
+                type="media"
+                rows={15}
+                className="speakerlist-placeholder"
+                ready={requestStatus === REQUEST_STATUS.SUCCESS}
+            >
+                <SpeakerAdd eventYear={eventYear} insertRecord={insertRecord} />
                 <div className="row">
                     {speakersData
                         .filter((speaker) => {
@@ -55,8 +57,8 @@ function SpeakerList() {
                         })
                     }
                 </div>
-            </div>
-        </ReactPlaceHolder>
+            </ReactPlaceHolder>
+        </div>
     );
 }
 
