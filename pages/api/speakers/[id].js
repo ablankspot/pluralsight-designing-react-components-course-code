@@ -16,11 +16,11 @@ export default async function handler(req, res) {
 
     switch (method) {
         case "POST":
-            await post();
+            await postMethod();
             break;
         
         case "PUT":
-            await put();
+            await putMethod();
             break;
         
         case "DELETE":
@@ -32,7 +32,7 @@ export default async function handler(req, res) {
             console.log(`Method ${method} not implemented`);
     }
 
-    async function put() {
+    async function putMethod() {
         try {
             const readFileData = await readFile(jsonFile);
             await delay(1000);
@@ -59,7 +59,7 @@ export default async function handler(req, res) {
         }
     }
 
-    async function post() {
+    async function postMethod() {
         try {
             const readFileData = await readFile(jsonFile);
             await delay(1000);

@@ -28,14 +28,28 @@ function Sessions() {
     );
 }
 
+function ImageWithFallback({ src, ...props }) {
+    const [ error, setError ] = useState(false);
+    const [ imgSrc, setImgSrc ] = useState(src);
+
+    function onError() {
+        if (!error) {
+            setImgSrc("/images/speaker-99999.jpg");
+            setError(true);
+        }
+    }
+
+    return (<img src={imgSrc} {...props} onError={onError} />)
+}
+
 function SpeakerImage() {
     const { speaker: { id, first, last } } = useContext(SpeakerContext);
 
     return (
         <div className="speaker-img d-flex flex-row justify-content-center align-items-center h-300">
-            <img
-                className="contain-fit"
+            <ImageWithFallback
                 src={`/images/speaker-${id}.jpg`}
+                className="contain-fit"
                 width="300"
                 alt={`${first} ${last}`}
             />
