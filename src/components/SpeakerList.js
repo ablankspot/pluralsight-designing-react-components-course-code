@@ -1,15 +1,17 @@
 import { useContext } from "react";
 import ReactPlaceHolder from "react-placeholder";
 import SpeakerCard from "./SpeakerCard";
-import useRequestDelay, { REQUEST_STATUS } from "../hooks/useRequestDelay";
+// import useRequestDelay, { REQUEST_STATUS } from "../hooks/useRequestDelay";
+import useRequestRest, { REQUEST_STATUS } from "../hooks/useRequestRest";
 import { data } from "../../SpeakerData"
 import { SpeakerFilterContext } from "../contexts/SpeakerFilterContext";
+import SpeakerAdd from "./SpeakerAdd";
 
 function SpeakerList() {
     const {
         data: speakersData, requestStatus,
-        error, updateRecord
-    } = useRequestDelay(2000, data);
+        error, updateRecord, insertRecord, deleteRecord
+    } = useRequestRest();
 
     const { eventYear, searchQuery } = useContext(SpeakerFilterContext);
 
@@ -22,13 +24,14 @@ function SpeakerList() {
     }
 
     return (
-        <ReactPlaceHolder
-            type="media"
-            rows={15}
-            className="speakerlist-placeholder"
-            ready={requestStatus === REQUEST_STATUS.SUCCESS}
-        >
-            <div className="container speakers-list">
+        <div className="container speakers-list">
+            <ReactPlaceHolder
+                type="media"
+                rows={15}
+                className="speakerlist-placeholder"
+                ready={requestStatus === REQUEST_STATUS.SUCCESS}
+            >
+                <SpeakerAdd eventYear={eventYear} insertRecord={insertRecord} />
                 <div className="row">
                     {speakersData
                         .filter((speaker) => {
@@ -47,18 +50,16 @@ function SpeakerList() {
                                 <SpeakerCard
                                     key={speaker.id}
                                     speaker={speaker}
-                                    onFavoriteToggle={(doneCallback) => {
-                                        updateRecord({
-                                            ...speaker,
-                                            favorite: !speaker.favorite,
-                                        }, doneCallback);
-                                    }} />
+                                    updateRecord={updateRecord}
+                                    insertRecord={insertRecord}
+                                    deleteRecord={deleteRecord}
+                                />
                             );
                         })
                     }
                 </div>
-            </div>
-        </ReactPlaceHolder>
+            </ReactPlaceHolder>
+        </div>
     );
 }
 
