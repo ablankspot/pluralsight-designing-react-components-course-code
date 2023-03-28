@@ -1,7 +1,8 @@
-import React, { useContext, useState } from 'react';
+import React, { memo, useContext, useState } from 'react';
 import { SpeakerFilterContext } from "../contexts/SpeakerFilterContext"
 import { SpeakerContext, SpeakerProvider } from '../contexts/SpeakerContext';
 import SpeakerDelete from "./SpeakerDelete"
+import ErrorBoundary from './ErrorBoundary';
 
 function Session(props) {
     return (
@@ -103,7 +104,7 @@ function SpeakerInfo() {
             </div>
             <SpeakerFavorite />
             <div>
-                <p className="card-description">{bio}</p>
+                <p className="card-description">{bio.substr(0, 70)}</p>
                 <div className="social d-flex flex-row mt-4">
                     <div className="company">
                         <h5>Company</h5>
@@ -119,8 +120,19 @@ function SpeakerInfo() {
     );
 }
 
-function SpeakerCard({ speaker, updateRecord, insertRecord, deleteRecord }) {
+const SpeakerCardNoError = memo(function SpeakerCard({ speaker, updateRecord, insertRecord, deleteRecord, showErrorCard }) {
     const { showSessions } = useContext(SpeakerFilterContext);
+
+    if (showErrorCard) {
+        return (
+             <div className="col-xs-12 col-sm-12 col-md-6 col-lg-4 col-sm-12 col-xs-12">
+                <div className="card card-height p-4 mt-4">
+                    <img src="/images/speaker-99999.jpg" />
+                    <div><b>Error showing Speaker</b></div>
+                </div>
+            </div>
+        )
+    }
 
     return (
         <SpeakerProvider speaker={speaker} updateRecord={updateRecord} insertRecord={insertRecord} deleteRecord={deleteRecord}>
@@ -134,6 +146,18 @@ function SpeakerCard({ speaker, updateRecord, insertRecord, deleteRecord }) {
             </div>
         </SpeakerProvider>
     );
+}, areEqualSpeaker);
+
+function areEqualSpeaker(prevProps, nextProps) {
+    return (prevProps.speaker.favorite === nextProps.speaker.favorite);
+}
+
+function SpeakerCard(props) {
+    return (
+        <ErrorBoundary errorUI={<SpeakerCardNoError {...props} showErrorCard={true} /> }>
+            <SpeakerCardNoError {...props } />
+        </ErrorBoundary>
+    )
 }
 
 export default SpeakerCard;
